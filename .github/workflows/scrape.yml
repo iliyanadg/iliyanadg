@@ -1,0 +1,26 @@
+name: scrape-of
+on:
+  schedule:
+    - cron: "*/10 * * * *"   # ogni 10 minuti
+  workflow_dispatch:
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm i
+      - run: npx playwright install --with-deps
+      - name: Run scraper
+        run: node scrape.js
+        env:
+          TARGET_USERNAME: iliyanadg
+          OF_COOKIE: ${{ secrets.OF_COOKIE }}
+      - uses: EndBug/add-and-commit@v9
+        with:
+          add: "stats.json"
+          message: "update stats"
