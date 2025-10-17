@@ -1,92 +1,95 @@
-#!/usr/bin/env node
-const fs = require('fs');
+// scrape.cjs
 const { chromium } = require('playwright');
+const fs = require('fs');
 
-const USERNAME = process.env.TARGET_USERNAME;
-const COOKIE_STR = process.env.OF_COOKIE;
-
-// Trasforma "a=b; c=d" in array di cookie Playwright
-function parseCookieString(str) {
-  if (!str) return [];
-  return str
+function parseCookieString(cookieStr) {
+  // "key1=val1; key2=val2; ..."
+  return cookieStr
     .split(';')
-    .map(p => p.trim())
+    .map(x => x.trim())
     .filter(Boolean)
     .map(pair => {
-      const eq = pair.indexOf('=');
-      const name = pair.slice(0, eq);
-      const value = pair.slice(eq + 1);
-      return {
-        name,
-        value,
-        domain: '.onlyfans.com',
-        path: '/',
-        httpOnly: false,
-        secure: true,
-      };
+      const i = pair.indexOf('=');
+      const name = pair.slice(0, i).trim();
+      const value = pair.slice(i + 1).trim();
+      return { name, value, domain: '.onlyfans.com', path: '/', httpOnly: false, secure: true };
     });
 }
 
-// Converte "2,3K" / "1.2M" / "446" in numero
-function toNumber(str) {
-  if (!str) return 0;
-  let s = str.replace(/\s/g, '').replace(',', '.');
-  const m = s.match(/^([\d.]+)([kKmM]?)$/);
-  if (!m) return parseInt(s.replace(/[^\d]/g, '')) || 0;
-  let num = parseFloat(m[1]);
-  const suf = m[2].toLowerCase();
-  if (suf === 'k') num *= 1e3;
-  if (suf === 'm') num *= 1e6;
-  return Math.round(num);
-}
+async function extractNumber(page, labelText) {
+  // Trova un nodo che contenga la label (es. "Likes") e prendi il numero accanto
+  const locator = page.locator(`xpath=//*[contains(normalize-space(.), "${labelText}")]`);
+  const count = await locator.first().evaluate((el) => {
+    // cerca un numero nella stessa riga / vicino
+    const text = el.textContent || '';
+    const mSelf = text.match(/\d[\d,.]*/);
+    if (mSelf) return mSelf[0];
 
-// Trova "numero" vicino all'etichetta (supporta IT/EN)
-function pickByLabels(text, labels) {
-  for (const label of labels) {
-    // es.: "446 Mi piace" oppure "Likes 446"
-    const re1 = new RegExp(`(\\d[\\d\\.,\\s]*[kKmM]?)\\s*${label}`, 'i');
-    const re2 = new RegExp(`${label}\\s*(\\d[\\d\\.,\\s]*[kKmM]?)`, 'i');
-    const m = text.match(re1) || text.match(re2);
-    if (m) return toNumber(m[1]);
-  }
-  return 0;
+    // prova nei fratelli
+    const sibs = Array.from(el.parentElement?.children || []);
+    for (const s of sibs) {
+      const t = (s.textContent || '').trim();
+      const m = t.match(/\d[\d,.]*/);
+      if (m) return m[0];
+    }
+    // fallback: cerca più in alto
+    let p = el.parentElement;
+    for (let i = 0; i < 3 && p; i++, p = p.parentElement) {
+      const t = (p.textContent || '').trim();
+      const m = t.match(/\d[\d,.]*/);
+      if (m) return m[0];
+    }
+    return null;
+  }).catch(() => null);
+
+  if (!count) return 0;
+  return parseInt(String(count).replace(/[^\d]/g, ''), 10) || 0;
 }
 
 (async () => {
-  const browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext();
+  const username = process.env.TARGET_USERNAME;
+  const cookieStr = process.env.OF_COOKIE;
 
-  // Applica i cookie (se presenti)
-  if (COOKIE_STR) {
-    const cookies = parseCookieString(COOKIE_STR);
-    if (cookies.length) await context.addCookies(cookies);
+  if (!username) throw new Error('Missing TARGET_USERNAME');
+  if (!cookieStr) throw new Error('Missing OF_COOKIE');
+
+  const browser = await chromium.launch({ headless: true });
+  const ctx = await browser.newContext();
+  await ctx.addCookies(parseCookieString(cookieStr));
+  const page = await ctx.newPage();
+
+  // Vai sul profilo
+  await page.goto(`https://onlyfans.com/${username}`, { waitUntil: 'domcontentloaded' });
+  // Aspetta che la pagina finisca di caricare roba dinamica
+  await page.waitForLoadState('networkidle', { timeout: 30000 }).catch(() => {});
+
+  // Alcuni elementi arrivano tardi: piccola attesa “elastica”
+  await page.waitForTimeout(1500);
+
+  // Proviamo varie label comuni. Se non troviamo, restano 0 (meglio che 1 random).
+  const likes  = await extractNumber(page, 'Likes');
+  const photos = await extractNumber(page, 'Photos');
+  const videos = await extractNumber(page, 'Videos');
+
+  // Se likes è ancora 0/1, riprova una volta dopo uno scroll (forza rendering)
+  let finalLikes = likes;
+  if (finalLikes <= 1) {
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight / 2));
+    await page.waitForTimeout(1200);
+    finalLikes = await extractNumber(page, 'Likes');
   }
 
-  const page = await context.newPage();
-  await page.goto(`https://onlyfans.com/${USERNAME}`, { waitUntil: 'domcontentloaded' });
-  // Piccola attesa perché i contatori compaiano
-  await page.waitForTimeout(2000);
-
-  // Prendiamo tutto il testo visibile per essere robusti a layout diversi e lingua
-  const allText = await page.evaluate(() => document.body.innerText);
-
-  const likes  = pickByLabels(allText, ['Mi piace', 'Likes']);
-  const photos = pickByLabels(allText, ['Foto', 'Photos']);
-  const videos = pickByLabels(allText, ['Video', 'Videos']);
-  // fallback extra, se vuoi anche Posts/Media
-  const media  = pickByLabels(allText, ['Media']);
-
-  const out = {
-    username: USERNAME,
-    likes,
-    photos: photos || media, // se non trova "Foto", prova "Media"
-    videos,
-    available: /online|disponibile|available/i.test(allText),
-    updatedAt: new Date().toISOString(),
+  const payload = {
+    username,
+    likes: Number.isFinite(finalLikes) ? finalLikes : 0,
+    photos: Number.isFinite(photos) ? photos : 0,
+    videos: Number.isFinite(videos) ? videos : 0,
+    available: true,
+    updatedAt: new Date().toISOString()
   };
 
-  fs.writeFileSync('stats.json', JSON.stringify(out, null, 2));
-  console.log('Saved', out);
+  fs.writeFileSync('stats.json', JSON.stringify(payload, null, 2));
+  console.log('Saved', payload);
 
   await browser.close();
 })();
