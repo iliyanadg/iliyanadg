@@ -1,0 +1,9 @@
+{
+  "name": "of-stats-scraper",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "playwright": "^1.45.0",
+    "fs-extra": "^11.2.0"
+  }
+}
