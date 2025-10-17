@@ -33,16 +33,17 @@ jobs:
       - name: Install Playwright (with deps)
         run: npx playwright install --with-deps
 
-     - name: Run scraper
-  env:
-    TARGET_USERNAME: iliyanadg
-    OF_COOKIE: ${{ secrets.OF_COOKIE }}
-  run: |
-    set -eux
-    pwd
-    ls -la
-    node ./scrape.cjs
+      # mini debug: vediamo i file in root
+      - name: List files (debug)
+        run: |
+          pwd
+          ls -la
 
+      - name: Run scraper
+        env:
+          TARGET_USERNAME: iliyanadg
+          OF_COOKIE: ${{ secrets.OF_COOKIE }}
+        run: node ./scrape.cjs   # importante: .cjs
 
       # Commit & push senza action esterna
       - name: Commit stats.json
@@ -60,6 +61,7 @@ jobs:
           fi
           git commit -m "update stats [skip ci]"
           git push origin HEAD:"$BRANCH"
+
 
 
 
