@@ -1,26 +1,49 @@
 name: scrape-of
+
 on:
   schedule:
     - cron: "*/10 * * * *"   # ogni 10 minuti
   workflow_dispatch:
+
+# Evita run sovrapposti
+concurrency:
+  group: scrape-of
+  cancel-in-progress: true
+
 jobs:
   scrape:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # serve per poter fare pull --rebase
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: "20"
-      - run: npm i
-      - run: npx playwright install --with-deps
+
+      - name: Install deps
+        run: npm i
+
+      - name: Install Playwright (with deps)
+        run: npx playwright install --with-deps
+
       - name: Run scraper
-        run: node scrape.js
         env:
           TARGET_USERNAME: iliyanadg
           OF_COOKIE: ${{ secrets.OF_COOKIE }}
-      - uses: EndBug/add-and-commit@v9
+        run: node scrape.js
+
+      - name: Commit stats
+        uses: EndBug/add-and-commit@v9
         with:
-          add: "stats.json"
+          add: stats.json
           message: "update stats"
+          pull: "--rebase --autostash"   # <— risolve il non-fast-forward
+          push: true
+
