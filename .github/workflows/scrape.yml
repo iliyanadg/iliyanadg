@@ -2,7 +2,7 @@ name: scrape-of
 
 on:
   schedule:
-    - cron: "*/10 * * * *"   # ogni 10 minuti
+    - cron: "*/10 * * * *"     # ogni 10 minuti
   workflow_dispatch:
 
 # Evita run sovrapposti
@@ -20,7 +20,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # serve per poter fare pull --rebase
+          fetch-depth: 0   # serve per fare pull --rebase e push
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -39,11 +39,18 @@ jobs:
           OF_COOKIE: ${{ secrets.OF_COOKIE }}
         run: node scrape.js
 
-      - name: Commit stats
-        uses: EndBug/add-and-commit@v9
-        with:
-          add: stats.json
-          message: "update stats"
-          pull: "--rebase --autostash"   # <— risolve il non-fast-forward
-          push: true
+      # --- Commit & Push senza action esterna ---
+      - name: Commit stats.json
+        env:
+          BRANCH: main
+        run: |
+          set -eux
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin "$BRANCH" || true
+          git add stats.json
+          # se non ci sono cambi, non fallire il job
+          git commit -m "update stats [skip ci]" || exit 0
+          git push origin HEAD:"$BRANCH"
+
 
