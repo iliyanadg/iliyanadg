@@ -1,23 +1,60 @@
+name: scrape-of
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: scrape-of
+  cancel-in-progress: true
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install deps
+        run: npm ci || npm i
+
+      - name: Install Playwright (with deps)
+        run: npx playwright install --with-deps
+
+      - name: Run scraper
+        env:
+          TARGET_USERNAME: iliyanadg
+          OF_COOKIE: ${{ secrets.OF_COOKIE }}
+        run: node ./scrape.cjs
+
       - name: Commit stats.json
         env:
           BRANCH: main
         run: |
           set -eux
-          git config user.name  "github-actions[bot]"
+          git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          # Allinea il branch remoto PRIMA del commit, anche con modifiche locali
           git fetch origin "$BRANCH"
           git -c rebase.autostash=true pull --rebase origin "$BRANCH" || true
-
           git add stats.json
           if git diff --cached --quiet; then
             echo "No changes to commit."
             exit 0
           fi
-
           git commit -m "update stats [skip ci]"
           git push origin HEAD:"$BRANCH"
+
 
 
 
