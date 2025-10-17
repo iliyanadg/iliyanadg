@@ -1,8 +1,111 @@
-{
-  "username": "iliyanadg",
-  "likes": 0,
-  "photos": 0,
-  "videos": 0,
-  "available": false,
-  "updatedAt": "2025-10-17T16:00:19.085Z"
+// scrape.js — versione robusta testo+regex
+const fs = require("fs");
+const { chromium, devices } = require("playwright");
+
+const USERNAME = process.env.TARGET_USERNAME;   // es. iliyanadg
+const COOKIE = process.env.OF_COOKIE;           // cookie dell'account viewer
+
+// helper: parse cookie header "name=value; name2=value2"
+function parseCookieHeader(cookieHeader) {
+  return cookieHeader
+    .split(";")
+    .map(s => s.trim())
+    .filter(Boolean)
+    .map(kv => {
+      const i = kv.indexOf("=");
+      if (i === -1) return null;
+      return { name: kv.slice(0, i), value: kv.slice(i + 1) };
+    })
+    .filter(Boolean);
 }
+
+function pickNumber(text, patterns) {
+  for (const re of patterns) {
+    const m = text.match(re);
+    if (m && m[1]) {
+      const n = m[1].replace(/\./g, "").replace(",", ".");
+      const v = Number(n);
+      if (!Number.isNaN(v)) return v;
+    }
+  }
+  return 0;
+}
+
+(async () => {
+  const browser = await chromium.launch({ headless: true });
+  // iPhone 12 Pro viewport/UA aiuta a ricevere markup più semplice
+  const ctx = await browser.newContext({
+    ...devices["iPhone 12 Pro"],
+    locale: "it-IT",
+    userAgent:
+      "Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1",
+  });
+
+  // imposta cookie
+  const cookies = parseCookieHeader(COOKIE).map(c => ({
+    ...c,
+    domain: ".onlyfans.com",
+    path: "/",
+    httpOnly: false,
+    secure: true,
+  }));
+  if (cookies.length) await ctx.addCookies(cookies);
+
+  const page = await ctx.newPage();
+
+  // vai al profilo
+  const url = `https://onlyfans.com/${USERNAME}`;
+  await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60000 });
+
+  // attesa “umana” + idratazione client
+  await page.waitForTimeout(3500);
+
+  // se c'è un redirect alla login, riprova una volta
+  const current = page.url();
+  if (!current.includes(`onlyfans.com/${USERNAME}`)) {
+    await page.goto(url, { waitUntil: "networkidle", timeout: 60000 });
+    await page.waitForTimeout(3000);
+  }
+
+  // prendi tutto il testo visibile
+  const fullText = await page.evaluate(() => document.body.innerText || "");
+
+  // regex robuste (IT/EN), catturano numeri con . o , come separatori
+  const num = s => Number(s?.replace(/\./g, "").replace(",", ".")) || 0;
+
+  const likes = pickNumber(fullText, [
+    /(\d[\d\.,]*)\s*(?:mi\s*piace|mi\s* piace|likes?)/i,
+    /❤\s*(\d[\d\.,]*)/i,
+  ]);
+
+  const photos = pickNumber(fullText, [
+    /(\d[\d\.,]*)\s*(?:foto|photos?)/i,
+    /🖼️\s*(\d[\d\.,]*)/i,
+  ]);
+
+  const videos = pickNumber(fullText, [
+    /(\d[\d\.,]*)\s*(?:video|videos?)/i,
+    /🎥\s*(\d[\d\.,]*)/i,
+  ]);
+
+  // disponibile: se troviamo parole chiave “online/available”
+  const available = /online|disponibile|available/i.test(fullText);
+
+  const data = {
+    username: USERNAME,
+    likes,
+    photos,
+    videos,
+    available,
+    updatedAt: new Date().toISOString(),
+  };
+
+  fs.writeFileSync("stats.json", JSON.stringify(data, null, 2));
+  console.log("Saved", data);
+
+  await browser.close();
+})().catch(err => {
+  console.error(err);
+  // in caso di errore, non sovrascrivere con zeri “vecchi”
+  process.exit(1);
+});
