@@ -33,11 +33,16 @@ jobs:
       - name: Install Playwright (with deps)
         run: npx playwright install --with-deps
 
-      - name: Run scraper
-        env:
-          TARGET_USERNAME: iliyanadg
-          OF_COOKIE: ${{ secrets.OF_COOKIE }}
-        run: node scrape.cjs   # <-- importante: .cjs
+     - name: Run scraper
+  env:
+    TARGET_USERNAME: iliyanadg
+    OF_COOKIE: ${{ secrets.OF_COOKIE }}
+  run: |
+    set -eux
+    pwd
+    ls -la
+    node ./scrape.cjs
+
 
       # Commit & push senza action esterna
       - name: Commit stats.json
