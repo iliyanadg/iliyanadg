@@ -1,134 +1,63 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Iliyana</title>
-<style>
-  body {
-    font-family: "Inter", sans-serif;
-    background: white;
-    color: #1c1c1c;
-    text-align: center;
-    margin: 0;
-    padding: 0;
-  }
-  .cover {
-    width: 100%;
-    max-height: 400px;
-    object-fit: cover;
-    border-bottom: 1px solid #eee;
-  }
-  h1 {
-    color: #56a8f5;
-    font-size: 3rem;
-    font-weight: 700;
-    margin-bottom: 0.3rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-  }
-  h2 {
-    color: #6b7680;
-    font-weight: 500;
-    font-size: 1.2rem;
-    margin-top: 0;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-  }
-  .stats {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin: 20px 0;
-  }
-  .stat {
-    background: #f0f7fc;
-    border-radius: 50px;
-    padding: 10px 20px;
-    font-weight: 600;
-    color: #1c2b39;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 1.1rem;
-  }
-  .btn {
-    display: inline-block;
-    margin: 10px auto;
-    padding: 14px 40px;
-    border-radius: 50px;
-    text-decoration: none;
-    color: white;
-    background: #3fa2f7;
-    font-weight: 700;
-    font-size: 1.1rem;
-    transition: background 0.3s;
-  }
-  .btn:hover {
-    background: #2a91e8;
-  }
-  .btn-outline {
-    display: inline-block;
-    margin: 10px auto;
-    padding: 14px 40px;
-    border-radius: 50px;
-    text-decoration: none;
-    color: #3fa2f7;
-    background: transparent;
-    border: 2px solid #3fa2f7;
-    font-weight: 700;
-    font-size: 1.1rem;
-    transition: all 0.3s;
-  }
-  .btn-outline:hover {
-    background: #3fa2f7;
-    color: white;
-  }
-  .community-link {
-    color: #3fa2f7;
-    font-size: 0.9rem;
-    text-decoration: none;
-  }
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="format-detection" content="telephone=no" />
+  <title>Iliyana 💙</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Quicksand:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{ --bg:#f5faff; --ink:#0a2a3c; --muted:#5e7a8a; --outline:#d9eef9; --chip:#eaf7ff; --of:#00aff0; --of2:#1a9ad6; --ok:#35c759; }
+    *{box-sizing:border-box}
+    html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+    body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;-webkit-tap-highlight-color:rgba(0,0,0,0);margin:0;font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto;color:var(--ink);background:linear-gradient(180deg,var(--bg),#fff)}
+    .wrap{max-width:860px;margin:86px auto 60px;padding:0 calc(18px + env(safe-area-inset-left)) 0 calc(18px + env(safe-area-inset-right))}
+    .card{background:#fff;border:2px solid var(--outline);border-radius:36px;box-shadow:0 20px 70px rgba(0,175,240,.12);padding:28px 24px;text-align:center}
+    .photo{width:100%;border-radius:30px;overflow:hidden}
+    .photo img{display:block;width:100%;height:auto;object-fit:cover}
+    h1.name{font-family:Quicksand,Poppins,system-ui;letter-spacing:.4px;margin:18px 0 10px;font-size:clamp(32px,6vw,48px);line-height:1;color:var(--of);display:flex;justify-content:center;align-items:center;gap:8px}
+    .badge-big{width:28px;height:28px;vertical-align:middle}
+    .handle{display:flex;justify-content:center;align-items:center;gap:6px;color:var(--muted);font-weight:600;margin-top:8px}
+    .badge-small{width:16px;height:16px;vertical-align:middle}
+    .chips{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin:18px 0 0}
+    .chip{display:inline-flex;align-items:center;gap:8px;background:var(--chip);border:2px solid var(--outline);padding:8px 14px;border-radius:999px;color:#0e3b52;font-weight:700}
+  </style>
 </head>
 <body>
-  <img src="https://i.imgur.com/TyZAcGA.jpeg" alt="Iliyana" class="cover" />
-
-  <h1>Iliyana <img src="https://i.imgur.com/knzQ6Vv.png" alt="verificato" width="24" /></h1>
-  <br />
-  <h2>@iliyanadg <img src="https://i.imgur.com/knzQ6Vv.png" alt="verificato" width="18" /></h2>
-  <br />
-  <span style="color:#6b7680;font-weight:500;">● Available</span>
-
-  <div class="stats">
-    <div class="stat">❤️ <span id="likes">--</span></div>
-    <div class="stat">🖼️ <span id="photos">--</span></div>
-    <div class="stat">🎥 <span id="videos">--</span></div>
-  </div>
-
-  <a href="https://onlyfans.com/iliyanadg" class="btn">🔞 OnlyFans • 18+</a>
-  <br />
-  <a href="#" class="btn-outline">📞 Videochiamata 1:1</a>
-  <br />
-  <a href="#" class="community-link">Entra nel canale della community →</a>
+  <main class="wrap">
+    <section class="card">
+      <div class="photo">
+        <img src="https://i.imgur.com/TyZAcGA.jpeg" alt="Iliyana">
+      </div>
+      <h1 class="name">Iliyana <img src="Screenshot 2025-10-18 alle 00.29.10.png" alt="badge" class="badge-big"></h1>
+      <div class="handle">@iliyanadg <img src="Screenshot 2025-10-18 alle 00.29.10.png" alt="badge" class="badge-small"></div>
+      <div class="chips">
+        <div class="chip">❤️ <span id="likes">0</span></div>
+        <div class="chip">🖼️ <span id="photos">0</span></div>
+        <div class="chip">🎥 <span id="videos">0</span></div>
+      </div>
+    </section>
+  </main>
 
   <script>
-    async function updateData() {
+    async function updateStats() {
       try {
         const res = await fetch('https://opensheet.elk.sh/1lUzMxs1S0s65qImCzeDFbWD0KmAXNlO8UGV_WAVKegw/Sheet1');
         const data = await res.json();
-        const row = data[0];
-        document.getElementById('likes').textContent = row.likes || '--';
-        document.getElementById('photos').textContent = row.photos || '--';
-        document.getElementById('videos').textContent = row.videos || '--';
-      } catch (e) {
-        console.error('Errore aggiornamento dati', e);
+        if (data && data.length > 0) {
+          const { likes, photos, videos } = data[0];
+          document.getElementById('likes').textContent = likes || 0;
+          document.getElementById('photos').textContent = photos || 0;
+          document.getElementById('videos').textContent = videos || 0;
+        }
+      } catch (err) {
+        console.error('Errore aggiornamento dati:', err);
       }
     }
-    updateData();
-    setInterval(updateData, 60000);
+    updateStats();
+    setInterval(updateStats, 60000);
   </script>
 </body>
 </html>
