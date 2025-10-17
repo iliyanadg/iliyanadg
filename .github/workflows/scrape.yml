@@ -38,6 +38,27 @@ jobs:
           OF_COOKIE: ${{ secrets.OF_COOKIE }}
         run: node ./scrape.cjs
 
+      # === Artifact di debug (consigliato) ===
+      - name: Upload debug artifacts
+        if: always()                     # esegui anche se lo scraping fallisce
+        uses: actions/upload-artifact@v4
+        with:
+          name: of-debug-${{ github.run_number }}
+          path: |
+            debug-profile.png
+            debug-profile.html
+          if-no-files-found: ignore
+          retention-days: 5
+
+      # (Opzionale) carica anche lo stats.json come artifact
+      - name: Upload stats.json (optional)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: stats-${{ github.run_number }}
+          path: stats.json
+          if-no-files-found: ignore
+
       - name: Commit stats.json
         env:
           BRANCH: main
