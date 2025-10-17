@@ -2,7 +2,7 @@ name: scrape-of
 
 on:
   schedule:
-    - cron: "*/10 * * * *"     # ogni 10 minuti
+    - cron: "*/10 * * * *"   # ogni 10 minuti
   workflow_dispatch:
 
 # Evita run sovrapposti
@@ -28,7 +28,7 @@ jobs:
           node-version: "20"
 
       - name: Install deps
-        run: npm i
+        run: npm ci || npm i
 
       - name: Install Playwright (with deps)
         run: npx playwright install --with-deps
@@ -37,9 +37,9 @@ jobs:
         env:
           TARGET_USERNAME: iliyanadg
           OF_COOKIE: ${{ secrets.OF_COOKIE }}
-        run: node scrape.js
+        run: node scrape.cjs   # <-- importante: .cjs
 
-      # --- Commit & Push senza action esterna ---
+      # Commit & push senza action esterna
       - name: Commit stats.json
         env:
           BRANCH: main
@@ -49,8 +49,12 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git pull --rebase origin "$BRANCH" || true
           git add stats.json
-          # se non ci sono cambi, non fallire il job
-          git commit -m "update stats [skip ci]" || exit 0
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "update stats [skip ci]"
           git push origin HEAD:"$BRANCH"
+
 
 
