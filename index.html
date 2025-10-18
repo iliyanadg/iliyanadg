@@ -1,179 +1,184 @@
 <!doctype html>
 <html lang="it">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Iliyana — Landing</title>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --bg:#f6f9fc;
-      --card:#ffffff;
-      --text:#1f2937;
-      --muted:#6b7280;
-      --primary:#3b82f6;
-      --primary-ink:#ffffff;
-      --pill:#eaf4ff;
-      --pill-ink:#0f172a;
-      --ok:#10b981;   /* verde online */
-      --off:#9aa0a6;  /* grigio offline */
-      --ring:#e5e7eb;
-      --shadow:0 10px 22px rgba(2,8,23,.08), 0 1px 2px rgba(2,8,23,.06);
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
-      color:var(--text);
-      background: radial-gradient(1200px 600px at 50% -100px, #ebf3ff 0, #f7fbff 55%, #ffffff 100%);
-    }
-    .wrap{ max-width: 900px; padding: 28px 18px 64px; margin: 0 auto; }
-    .card{ background:var(--card); border-radius: 28px; box-shadow: var(--shadow); padding: 20px 20px 28px; }
-    .hero{ width:100%; aspect-ratio: 4 / 5; object-fit:cover; border-radius: 20px; display:block; box-shadow: 0 6px 18px rgba(2,8,23,.08) inset; }
-    .head{ text-align:center; margin-top: 16px; }
-    .name{ font-weight:800; font-size: clamp(32px, 4.6vw, 44px); letter-spacing:.3px; color:#3ba1ff;
-           display:inline-flex; align-items:center; gap:2px; line-height:1.05; }
-    .handle-row{ margin-top: 6px; display:flex; align-items:center; gap:6px; justify-content:center; color:var(--muted); font-weight:600; }
-    .dot{ width:8px;height:8px;border-radius:999px;background:var(--off); box-shadow: 0 0 0 4px #f1f5f9 inset; }
-    .status{ display:flex; align-items:center; gap:8px; margin-left:16px; } /* staccato da @ verso destra */
-    .verified{
-      width: 20px; height: 20px; border-radius: 999px;
-      background: var(--primary);
-      border: 2px solid #fff;
-      display:inline-flex; align-items:center; justify-content:center;
-      vertical-align: middle;
-      box-shadow: 0 0 0 1px rgba(2,8,23,.06);
-      transform: translateY(1px);
-    }
-    .verified svg{ width: 12px; height: 12px; display:block; }
-    .verified svg path{ fill: var(--primary-ink); }
-    .verified.small{
-      width:16px; height:16px;
-      transform: translate(-2px, 1px); /* molto vicino alla 'g' */
-      margin-left: -1px;
-    }
-    .verified.small svg{ width:10px; height:10px; }
-
-    /* Pills: sempre in una sola riga */
-    .pills{
-      margin: 14px auto 6px;
-      display:flex; gap:10px; justify-content:center; align-items:center;
-      flex-wrap: nowrap;
-    }
-    .pill{
-      background: var(--pill); color: var(--pill-ink);
-      padding: 10px 14px; border-radius: 999px; font-weight:800;
-      display:inline-flex; align-items:center; gap:8px;
-      border:1px solid #dceafe; min-width: 100px; justify-content:center;
-      font-size: 15px;
-    }
-    .pill i{
-      font-style:normal; display:inline-flex; align-items:center; justify-content:center;
-      width:26px; height:26px; border-radius: 9px; background:#fff; border:1px solid #e7eefc; box-shadow: 0 2px 0 #e8f0ff inset;
-    }
-
-    .actions{ margin: 18px auto 10px; display:flex; flex-direction:column; gap:12px; align-items:center; max-width:540px; }
-    .btn{ width:100%; border:0; outline:0; background: linear-gradient(180deg, #54a7ff 0, #3a8df1 100%); color:#fff; font-weight:800; font-size:18px; border-radius: 999px; padding:16px 22px; cursor:pointer; box-shadow: 0 8px 18px rgba(44,127,255,.25); display:flex; align-items:center; justify-content:center; gap:10px; text-decoration:none; }
-    .btn.secondary{ background: #fff; color:#1f3b67; border:1.5px solid #cfe3ff; box-shadow: 0 8px 18px rgba(44,127,255,.08); }
-    .link{ margin-top: 8px; text-align:center; }
-    .link a{ color:#1f55d6; font-weight:600; text-underline-offset:4px; text-decoration: underline; }
-    .footer{ text-align:center; color:#99a7bb; font-size:13px; margin-top: 18px; }
-    .row-center{ display:flex; align-items:center; justify-content:center; gap:2px; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Iliyana — links</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f5f8fc;
+    --card:#ffffff;
+    --text:#0f172a;
+    --muted:#6b7280;
+    --primary:#3ba1f5;
+    --pill:#eaf5ff;
+    --chip-bg:#eaf5ff;
+    --chip-text:#1f2937;
+    --shadow: 0 10px 30px rgba(15, 23, 42, .08);
+    --radius:20px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    background: radial-gradient(1200px 600px at 50% -50%, #d8ebff 0, rgba(216,235,255,0) 70%) , var(--bg);
+    color:var(--text);
+  }
+  .wrap{min-height:100svh; display:flex; align-items:center; justify-content:center; padding:24px;}
+  .card{
+    width:min(920px, 96vw);
+    background:var(--card);
+    border-radius:28px;
+    box-shadow:var(--shadow);
+    padding:24px 24px 28px;
+  }
+  .hero{
+    width:100%; aspect-ratio: 4/5;
+    border-radius:20px;
+    object-fit:cover; object-position:center;
+    display:block;
+  }
+  header{ text-align:center; padding:18px 8px 0; }
+  .nameRow, .handleRow{ display:flex; align-items:center; justify-content:center; gap:6px; }
+  .name{ font-size:42px; line-height:1.04; font-weight:700; color:#54A9F9; letter-spacing:.2px; }
+  .handle{ color:var(--muted); font-weight:700; margin-right:6px; }
+  .verify{
+    width:22px; height:22px; display:inline-block; vertical-align:middle;
+  }
+  .verify svg{ display:block; width:100%; height:100%; }
+  .statusPill{ display:inline-flex; align-items:center; gap:8px; background:#f1f5f9; border-radius:999px; padding:6px 10px; margin-left:8px; }
+  .status-dot{ width:8px; height:8px; border-radius:50%; background:#9ca3af; flex:0 0 8px; }
+  .status-text{ font-size:14px; font-weight:600; text-transform:none; letter-spacing:0; color:var(--muted); }
+  /* counters */
+  .chips{ display:flex; align-items:center; justify-content:center; gap:14px; margin:14px 0 6px; flex-wrap:nowrap; }
+  .chip{
+    background:var(--chip-bg);
+    border-radius:999px;
+    padding:10px 16px;
+    font-weight:700; color:#13283d;
+    display:flex; gap:10px; align-items:center;
+    box-shadow: 0 0 0 1px rgba(59,161,245,.06) inset;
+  }
+  .chip .emo{ font-size:18px; opacity:.9 }
+  /* buttons */
+  .btn{
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    width:min(680px, 90%); margin:14px auto 0;
+    padding:16px 18px;
+    border-radius:18px;
+    text-decoration:none;
+    font-weight:700;
+    transition: transform .05s ease, box-shadow .2s ease, background .2s ease, color .2s ease;
+    box-shadow: var(--shadow);
+  }
+  .btn:active{ transform:translateY(1px) scale(.998); }
+  .btn-primary{ background:#4aa3ea; color:white; }
+  .btn-primary:hover{ background:#3a97e6; }
+  .btn-outline{ border:2px solid #9fd1ff; color:#145ea8; background:white; }
+  .btn-outline:hover{ background:#eef7ff; }
+  .btn-inline{ box-shadow:none; border:none; color:#2c6cb8; background:transparent; text-decoration:underline; }
+  footer{ text-align:center; color:#9aa6b2; font-size:12px; margin-top:18px; }
+  @media (max-width:640px){
+    .name{ font-size:36px; }
+    .chips{ gap:10px; }
+    .chip{ padding:9px 14px; }
+  }
+</style>
 </head>
 <body>
   <div class="wrap">
     <div class="card">
-      <img class="hero" src="https://i.imgur.com/TyZAcGA.jpeg" alt="Iliyana" />
-
-      <div class="head">
-        <div class="name row-center">
-          <span>Iliyana</span>
-          <span class="verified" aria-label="Verified" title="Verified">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.285 6.708a1.25 1.25 0 0 1 .007 1.768l-8.25 8.5a1.25 1.25 0 0 1-1.79.006L3.7 10.62a1.25 1.25 0 1 1 1.78-1.756l5.02 5.087 7.357-7.58a1.25 1.25 0 0 1 1.768-.064z"/></svg>
+      <img class="hero" src="https://i.imgur.com/TyZAcGA.jpeg" alt="Iliyana cover">
+      <header>
+        <div class="nameRow">
+          <div class="name">Iliyana</div>
+          <span class="verify" title="verified">
+            <!-- IG-like verified (circle) -->
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="11" fill="#4aa3ea"></circle>
+              <path d="M17.2 8.6l-6.1 6.2-2.3-2.3a1 1 0 10-1.4 1.4l3 3a1 1 0 001.4 0l6.8-6.8a1 1 0 10-1.4-1.4z" fill="#fff"/>
+            </svg>
           </span>
         </div>
 
-        <div class="handle-row">
-          <span>@iliyanadg</span>
-          <span class="verified small" aria-hidden="true">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.285 6.708a1.25 1.25 0 0 1 .007 1.768l-8.25 8.5a1.25 1.25 0 0 1-1.79.006L3.7 10.62a1.25 1.25 0 1 1 1.78-1.756l5.02 5.087 7.357-7.58a1.25 1.25 0 0 1 1.768-.064z"/></svg>
+        <div class="handleRow">
+          <div class="handle">@iliyanadg</div>
+          <span class="verify" title="verified">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="11" fill="#4aa3ea"></circle>
+              <path d="M17.2 8.6l-6.1 6.2-2.3-2.3a1 1 0 10-1.4 1.4l3 3a1 1 0 001.4 0l6.8-6.8a1 1 0 10-1.4-1.4z" fill="#fff"/>
+            </svg>
           </span>
-          <span class="status" id="status">
-            <span class="dot" id="status-dot"></span>
-            <span id="status-label">Available</span>
+
+          <span class="statusPill">
+            <span id="statusDot" class="status-dot"></span>
+            <span id="statusText" class="status-text">Online</span>
           </span>
         </div>
 
-        <div class="pills">
-          <div class="pill"><i>❤</i><span id="likes">--</span></div>
-          <div class="pill"><i>🖼️</i><span id="photos">--</span></div>
-          <div class="pill"><i>🎥</i><span id="videos">--</span></div>
+        <div class="chips" role="status" aria-live="polite">
+          <div class="chip"><span class="emo">❤️</span><span id="likesVal">0</span></div>
+          <div class="chip"><span class="emo">🖼️</span><span id="photosVal">0</span></div>
+          <div class="chip"><span class="emo">🎥</span><span id="videosVal">0</span></div>
         </div>
+      </header>
+
+      <a class="btn btn-primary" href="https://onlyfans.com/iliyanadg" target="_blank" rel="noopener">OnlyFans 🔞</a>
+      <a class="btn btn-outline" href="https://cal.com/iliyanadg" target="_blank" rel="noopener">📞 Videochiamata 1:1</a>
+      <div style="text-align:center; margin-top:8px;">
+        <a class="btn-inline" href="https://t.me/+6E0tmlehbQA1YmI0" target="_blank" rel="noopener">Entra nel canale della community →</a>
       </div>
 
-      <div class="actions">
-        <a class="btn" href="https://onlyfans.com/iliyanadg" target="_blank" rel="nofollow noopener">
-          <span>OnlyFans 🔞</span>
-        </a>
-        <a class="btn secondary" href="https://cal.com/iliyanadg" target="_blank" rel="nofollow noopener">
-          <span>Videochiamata 1:1</span>
-        </a>
-      </div>
-
-      <div class="link"><a href="https://t.me/+6E0tmlehbQA1YmI0" target="_blank" rel="nofollow noopener">Entra nel canale della community →</a></div>
-      <div class="footer">© Iliyana — Tutti i diritti riservati • Vietata la condivisione non autorizzata.</div>
+      <footer>© Iliyana — Tutti i diritti riservati • Vietata la condivisione non autorizzata.</footer>
     </div>
   </div>
 
-  <script>
-    // === LIVE DATA from Google Sheets via opensheet.elk.sh ===============
-    const SHEET_JSON_BASE = "https://opensheet.elk.sh/1lUzMxs1S0s65qImCzeDFbWD0KmAXNlO8UGV_WAVKegw/Sheet1";
+<script>
+(async () => {
+  const SHEET_URL = "https://opensheet.elk.sh/1lUzMxs1S0s65qImCzeDFbWD0KmAXNlO8UGV_WAVKegw/Sheet1";
 
-    function bust(url){ return url + (url.includes("?") ? "&" : "?") + "ts=" + Date.now(); }
-    function toInt(v){ const n = parseInt(String(v ?? "").replace(/[^\d]/g, ""), 10); return Number.isFinite(n) ? n : 0; }
-    function parseOnline(val){
-      const s = String(val ?? "").toLowerCase().trim();
-      // accetta varie forme: 'online', 'available', 'avaible', 'on', true/1/yes/si
-      if (["online","available","avaible","on","true","1","sì","si","yes","verde","green"].includes(s)) return true;
-      if (["offline","unavailable","off","false","0","no","grigio","grey","gray"].includes(s)) return false;
-      return null;
-    }
+  const num = v => {
+    const n = parseInt(String(v).replace(/[^0-9]/g,''), 10);
+    return Number.isFinite(n) ? n : 0;
+  };
+  const setCap = s => {
+    if(!s) return "";
+    s = String(s).trim();
+    return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+  };
 
-    async function refreshCounts(){
-      try{
-        const res = await fetch(bust(SHEET_JSON_BASE), { cache:"no-store" });
-        const rows = await res.json();
-        const r = rows && rows.length ? rows[0] : {};
+  try {
+    const res = await fetch(SHEET_URL, { cache: "no-store" });
+    const rows = await res.json();
+    const row = rows[0] || {};
 
-        const likes  = toInt(r.likes ?? r.Likes);
-        const photos = toInt(r.photos ?? r.Photos);
-        const videos = toInt(r.videos ?? r.Videos);
+    // numbers
+    document.getElementById("likesVal").textContent  = num(row.likes);
+    document.getElementById("photosVal").textContent = num(row.photos);
+    document.getElementById("videosVal").textContent = num(row.videos);
 
-        const statusVal = r.status ?? r.Status ?? r.online ?? r.Online;
-        const isOnline = parseOnline(statusVal);
+    // status
+    const raw = (row.status ?? row.online ?? "").toString().trim();
+    const statusText = document.getElementById("statusText");
+    const dot = document.getElementById("statusDot");
 
-        document.getElementById("likes").textContent  = likes.toLocaleString('it-IT');
-        document.getElementById("photos").textContent = photos.toLocaleString('it-IT');
-        document.getElementById("videos").textContent = videos.toLocaleString('it-IT');
+    // display capitalized (first letter big, rest small)
+    statusText.textContent = setCap(raw || "offline");
 
-        const dot = document.getElementById("status-dot");
-        const label = document.getElementById("status-label");
-        if(isOnline === true){
-          dot.style.background = getComputedStyle(document.documentElement).getPropertyValue("--ok").trim() || "#10b981";
-          label.textContent = (String(statusVal||"").toLowerCase().includes("online")) ? "ONLINE" : "AVAILABLE";
-        }else if(isOnline === false){
-          dot.style.background = getComputedStyle(document.documentElement).getPropertyValue("--off").trim() || "#9aa0a6";
-          label.textContent = "OFFLINE";
-        }
-      }catch(err){
-        console.warn("Impossibile caricare i dati dallo Sheet:", err);
-      }
-    }
+    // color logic
+    const norm = raw.toLowerCase();
+    const ONLINE = new Set(["available","avaible","online","on","1","true","yes"]);
+    const isOnline = ONLINE.has(norm);
 
-    refreshCounts();
-    setInterval(refreshCounts, 60000);
-  </script>
+    dot.style.background = isOnline ? "#22c55e" : "#9ca3af"; // green or gray
+  } catch(e){
+    console.error("Sheet fetch error", e);
+    // fallback: leave defaults
+  }
+})();
+</script>
 </body>
 </html>
