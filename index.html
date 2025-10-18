@@ -16,8 +16,8 @@
       --primary-ink:#ffffff;
       --pill:#eaf4ff;
       --pill-ink:#0f172a;
-      --ok:#10b981;
-      --off:#9aa0a6;
+      --ok:#10b981;   /* verde online */
+      --off:#9aa0a6;  /* grigio offline */
       --ring:#e5e7eb;
       --shadow:0 10px 22px rgba(2,8,23,.08), 0 1px 2px rgba(2,8,23,.06);
     }
@@ -36,8 +36,7 @@
            display:inline-flex; align-items:center; gap:2px; line-height:1.05; }
     .handle-row{ margin-top: 6px; display:flex; align-items:center; gap:6px; justify-content:center; color:var(--muted); font-weight:600; }
     .dot{ width:8px;height:8px;border-radius:999px;background:var(--off); box-shadow: 0 0 0 4px #f1f5f9 inset; }
-    .status.online .dot{ background: var(--ok); }
-    .status{ display:flex; align-items:center; gap:8px; margin-left:16px; }
+    .status{ display:flex; align-items:center; gap:8px; margin-left:16px; } /* staccato da @ verso destra */
     .verified{
       width: 20px; height: 20px; border-radius: 999px;
       background: var(--primary);
@@ -51,11 +50,12 @@
     .verified svg path{ fill: var(--primary-ink); }
     .verified.small{
       width:16px; height:16px;
-      transform: translate(-2px, 1px);   /* avvicinata ancora di più verso la 'g' */
-      margin-left: -1px;                 /* micro overlap naturale */
+      transform: translate(-2px, 1px); /* molto vicino alla 'g' */
+      margin-left: -1px;
     }
     .verified.small svg{ width:10px; height:10px; }
 
+    /* Pills: sempre in una sola riga */
     .pills{
       margin: 14px auto 6px;
       display:flex; gap:10px; justify-content:center; align-items:center;
@@ -128,14 +128,16 @@
   </div>
 
   <script>
+    // === LIVE DATA from Google Sheets via opensheet.elk.sh ===============
     const SHEET_JSON_BASE = "https://opensheet.elk.sh/1lUzMxs1S0s65qImCzeDFbWD0KmAXNlO8UGV_WAVKegw/Sheet1";
 
     function bust(url){ return url + (url.includes("?") ? "&" : "?") + "ts=" + Date.now(); }
     function toInt(v){ const n = parseInt(String(v ?? "").replace(/[^\d]/g, ""), 10); return Number.isFinite(n) ? n : 0; }
     function parseOnline(val){
       const s = String(val ?? "").toLowerCase().trim();
-      if (["online", "true", "1", "sì", "si", "yes"].includes(s)) return true;
-      if (["offline", "false", "0", "no"].includes(s)) return false;
+      // accetta varie forme: 'online', 'available', 'avaible', 'on', true/1/yes/si
+      if (["online","available","avaible","on","true","1","sì","si","yes","verde","green"].includes(s)) return true;
+      if (["offline","unavailable","off","false","0","no","grigio","grey","gray"].includes(s)) return false;
       return null;
     }
 
@@ -158,15 +160,12 @@
 
         const dot = document.getElementById("status-dot");
         const label = document.getElementById("status-label");
-        const statusEl = document.getElementById("status");
         if(isOnline === true){
-          statusEl.classList.add("online");
           dot.style.background = getComputedStyle(document.documentElement).getPropertyValue("--ok").trim() || "#10b981";
-          label.textContent = "Available";
+          label.textContent = (String(statusVal||"").toLowerCase().includes("online")) ? "ONLINE" : "AVAILABLE";
         }else if(isOnline === false){
-          statusEl.classList.remove("online");
           dot.style.background = getComputedStyle(document.documentElement).getPropertyValue("--off").trim() || "#9aa0a6";
-          label.textContent = "Unavailable";
+          label.textContent = "OFFLINE";
         }
       }catch(err){
         console.warn("Impossibile caricare i dati dallo Sheet:", err);
