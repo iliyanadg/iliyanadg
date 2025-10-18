@@ -35,23 +35,24 @@
     box-shadow:var(--shadow);
     padding:24px 24px 28px;
   }
+
+  /* 🌸 Immagine */
   .hero{
-    width:100%;
+    width:auto;
+    max-width:100%;
     aspect-ratio: 4/5;
     border-radius:20px;
     object-fit:cover;
     object-position:center;
     display:block;
+    margin:0 auto;
   }
 
   /* 🌐 Riduzione immagine solo su web/desktop */
   @media (min-width: 768px) {
     .hero {
-      max-width: 40%;       /* immagine più piccola su desktop */
-      aspect-ratio: 3/4.5;  /* proporzioni armoniose */
-      margin: 0 auto;       /* centrata */
-      border-radius: 20px;
-      display: block;
+      max-width: 60%;       /* immagine più piccola su desktop */
+      aspect-ratio: 3.2/5;  /* proporzioni armoniose */
     }
   }
 
