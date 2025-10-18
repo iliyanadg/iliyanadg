@@ -13,11 +13,11 @@
     --card:#ffffff;
     --text:#0f172a;
     --muted:#6b7280;
-    --primary:#1d9bf0; /* blu X */
+    --primary:#3897f0; /* blu Instagram */
     --pill:#eaf5ff;
     --chip-bg:#eaf5ff;
     --chip-text:#1f2937;
-    --shadow: 0 10px 30px rgba(15, 23, 42, .08);
+    --shadow:0 10px 30px rgba(15, 23, 42, .08);
     --radius:20px;
   }
 
@@ -59,11 +59,11 @@
   header{text-align:center; padding:18px 8px 0;}
   .nameRow,.handleRow{
     display:flex; align-items:center; justify-content:center;
-    gap:4px; /* più vicino al testo */
+    gap:4px;
   }
   .name{
     font-size:42px; font-weight:700;
-    color:#1d9bf0;
+    color:#54A9F9;
     letter-spacing:.2px;
   }
   .handle{
@@ -73,7 +73,7 @@
     font-size:18px;
   }
 
-  /* Nuovo simbolo di verifica (stile X) */
+  /* 🔵 Badge di verifica stile Instagram */
   .verify{
     width:22px; height:22px;
     display:inline-block;
@@ -81,15 +81,6 @@
   }
   .verify svg{
     display:block; width:100%; height:100%;
-  }
-
-  .verify circle{
-    fill:white;
-    stroke:var(--primary);
-    stroke-width:2.4;
-  }
-  .verify path{
-    fill:var(--primary);
   }
 
   .statusPill{
@@ -147,18 +138,19 @@
         <div class="nameRow">
           <div class="name">Iliyana</div>
           <span class="verify" title="verified">
+            <!-- Badge Instagram -->
             <svg viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="12" cy="12" r="10"></circle>
-              <path d="M10.3 14.4l-2.3-2.3-1.4 1.4 3.7 3.7 6.8-6.8-1.4-1.4z"></path>
+              <path fill="#3897f0" d="M12 0c1.3 0 2.5.5 3.4 1.4.9.9 1.4 2.1 1.4 3.4 0 1.3-.5 2.5-1.4 3.4-.9.9-2.1 1.4-3.4 1.4s-2.5-.5-3.4-1.4C7.3 7.3 6.8 6.1 6.8 4.8c0-1.3.5-2.5 1.4-3.4C9.1.5 10.3 0 11.6 0H12zM10.6 16.3l-3.2-3.2 1.4-1.4 1.8 1.8 5-5 1.4 1.4-6.4 6.4z"/>
             </svg>
           </span>
         </div>
 
-         <div class="handle-row">
-          <span>@iliyanadg</span>
-          <!-- Smaller blue verification next to handle -->
-          <span class="verified small" aria-hidden="true">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.285 6.708a1.25 1.25 0 0 1 .007 1.768l-8.25 8.5a1.25 1.25 0 0 1-1.79.006L3.7 10.62a1.25 1.25 0 1 1 1.78-1.756l5.02 5.087 7.357-7.58a1.25 1.25 0 0 1 1.768-.064z"/></svg>
+        <div class="handleRow">
+          <div class="handle">@iliyanadg</div>
+          <span class="verify" title="verified">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="#3897f0" d="M12 0c1.3 0 2.5.5 3.4 1.4.9.9 1.4 2.1 1.4 3.4 0 1.3-.5 2.5-1.4 3.4-.9.9-2.1 1.4-3.4 1.4s-2.5-.5-3.4-1.4C7.3 7.3 6.8 6.1 6.8 4.8c0-1.3.5-2.5 1.4-3.4C9.1.5 10.3 0 11.6 0H12zM10.6 16.3l-3.2-3.2 1.4-1.4 1.8 1.8 5-5 1.4 1.4-6.4 6.4z"/>
+            </svg>
           </span>
 
           <span class="statusPill">
@@ -187,44 +179,24 @@
 <script>
 (async () => {
   const SHEET_URL = "https://opensheet.elk.sh/1lUzMxs1S0s65qImCzeDFbWD0KmAXNlO8UGV_WAVKegw/Sheet1";
-
-  const num = v => {
-    const n = parseInt(String(v).replace(/[^0-9]/g,''), 10);
-    return Number.isFinite(n) ? n : 0;
-  };
-  const setCap = s => {
-    if(!s) return "";
-    s = String(s).trim();
-    return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
-  };
-
+  const num = v => { const n = parseInt(String(v).replace(/[^0-9]/g,''), 10); return Number.isFinite(n)?n:0; };
+  const setCap = s => { if(!s) return ""; s=String(s).trim(); return s.charAt(0).toUpperCase()+s.slice(1).toLowerCase(); };
   try {
-    const res = await fetch(SHEET_URL, { cache: "no-store" });
-    const rows = await res.json();
-    const row = rows[0] || {};
-
-    document.getElementById("likesVal").textContent  = num(row.likes);
-    document.getElementById("photosVal").textContent = num(row.photos);
-    document.getElementById("videosVal").textContent = num(row.videos);
-
-    const raw = (row.status ?? row.online ?? "").toString().trim();
-    const statusText = document.getElementById("statusText");
-    const dot = document.getElementById("statusDot");
-
-    statusText.textContent = setCap(raw || "offline");
-
-    const norm = raw.toLowerCase();
-    const ONLINE = new Set(["available","avaible","online","on","1","true","yes"]);
-    const isOnline = ONLINE.has(norm);
-    dot.style.background = isOnline ? "#22c55e" : "#9ca3af";
-  } catch(e){
-    console.error("Sheet fetch error", e);
-  }
+    const res = await fetch(SHEET_URL,{cache:"no-store"}); const rows=await res.json(); const row=rows[0]||{};
+    document.getElementById("likesVal").textContent=num(row.likes);
+    document.getElementById("photosVal").textContent=num(row.photos);
+    document.getElementById("videosVal").textContent=num(row.videos);
+    const raw=(row.status??row.online??"").toString().trim();
+    const statusText=document.getElementById("statusText");
+    const dot=document.getElementById("statusDot");
+    statusText.textContent=setCap(raw||"offline");
+    const norm=raw.toLowerCase(); const ONLINE=new Set(["available","avaible","online","on","1","true","yes"]);
+    const isOnline=ONLINE.has(norm); dot.style.background=isOnline?"#22c55e":"#9ca3af";
+  }catch(e){console.error("Sheet fetch error",e);}
 })();
 </script>
 </body>
 </html>
-
 
 
 
